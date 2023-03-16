@@ -1,20 +1,30 @@
 package com.task.entity;
 
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+@Entity
 public class Label {
+    @Id
+    @GeneratedValue
     Integer id;
     String name;
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "task_label",
+            joinColumns = { @JoinColumn(name = "id") },
+            inverseJoinColumns = { @JoinColumn(name = "id_label") }
+    )
+    List<Task> tasks;
 
-    List<Task> taskList;
-
-    public List<Task> getTaskList() {
-        return taskList;
+    public List<Task> getTasks() {
+        return tasks;
     }
 
-    public void setTaskList(List<Task> taskList) {
-        this.taskList = taskList;
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 
     public Integer getId() {

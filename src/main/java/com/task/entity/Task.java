@@ -1,16 +1,23 @@
 package com.task.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-
+@Entity
 public class Task {
+    @Id
+    @GeneratedValue
     Integer id;
     Integer priority;
     String description;
     LocalDateTime localDateTime;
-
-    List<Label> labelList;
+    @ManyToMany(mappedBy = "tasks")
+    List<Label> labels;
 
     public void setId(Integer id) {
         this.id = id;
@@ -40,12 +47,12 @@ public class Task {
         this.description = description;
     }
 
-    public List<Label> getLabelList() {
-        return labelList;
+    public List<Label> getLabels() {
+        return labels;
     }
 
-    public void setLabelList(List<Label> labelList) {
-        this.labelList = labelList;
+    public void setLabels(List<Label> labels) {
+        this.labels = labels;
     }
 
     @Override

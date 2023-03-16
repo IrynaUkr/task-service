@@ -1,14 +1,10 @@
 package com.task.dbmanger;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 public class DBManager {
-    private final String url = "jdbc:postgresql://localhost/task_service";
-    private final String user = "postgres";
-    private final String password = "123";
-
+    private static SessionFactory sessionFactory = null;
     private static DBManager instance;
     public static synchronized DBManager getInstance()  {
         if (instance == null) {
@@ -17,15 +13,14 @@ public class DBManager {
         return instance;
     }
 
-    public Connection connect() throws ClassNotFoundException {
-        Class.forName("org.postgresql.Driver");
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(url, user, password);
-            System.out.println("Connected to the PostgresSQL server successfully.");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+    public static SessionFactory getFactory() {
+        if (sessionFactory == null) {
+            try {
+                sessionFactory = new Configuration().configure().buildSessionFactory();
+            } catch (Throwable ex) {
+                throw new ExceptionInInitializerError(ex);
+            }
         }
-        return conn;
+        return sessionFactory;
     }
 }
