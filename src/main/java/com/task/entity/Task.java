@@ -1,9 +1,6 @@
 package com.task.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,11 +8,11 @@ import java.util.Objects;
 @Entity
 public class Task {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     Integer priority;
     String description;
-    LocalDateTime localDateTime;
+    LocalDateTime task_date;
     @ManyToMany(mappedBy = "tasks")
     List<Label> labels;
 
@@ -35,12 +32,12 @@ public class Task {
         return description;
     }
 
-    public LocalDateTime getLocalDateTime() {
-        return localDateTime;
+    public LocalDateTime getTask_date() {
+        return task_date;
     }
 
-    public void setLocalDateTime(LocalDateTime localDateTime) {
-        this.localDateTime = localDateTime;
+    public void setTask_date(LocalDateTime task_date) {
+        this.task_date = task_date;
     }
 
     public void setDescription(String description) {

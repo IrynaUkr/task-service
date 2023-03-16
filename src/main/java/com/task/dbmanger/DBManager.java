@@ -1,10 +1,11 @@
 package com.task.dbmanger;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
 
 public class DBManager {
-    private static SessionFactory sessionFactory = null;
     private static DBManager instance;
     public static synchronized DBManager getInstance()  {
         if (instance == null) {
@@ -13,14 +14,16 @@ public class DBManager {
         return instance;
     }
 
-    public static SessionFactory getFactory() {
-        if (sessionFactory == null) {
+    public static EntityManager getEntityManager() {
+        EntityManagerFactory em = Persistence.createEntityManagerFactory("JPAUser");
+        EntityManager entityManager = null;
+        if (entityManager == null) {
             try {
-                sessionFactory = new Configuration().configure().buildSessionFactory();
+                entityManager = em.createEntityManager();
             } catch (Throwable ex) {
                 throw new ExceptionInInitializerError(ex);
             }
         }
-        return sessionFactory;
+        return entityManager;
     }
 }

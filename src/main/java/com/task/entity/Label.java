@@ -8,7 +8,7 @@ import java.util.Objects;
 @Entity
 public class Label {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String name;
     @ManyToMany(cascade = { CascadeType.ALL })
