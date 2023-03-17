@@ -4,12 +4,15 @@ import com.task.dbmanger.DBManager;
 import com.task.entity.Company;
 import com.task.entity.Person;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet(name = "ServletCreateCompany", value = "/ServletCreateCompany")
 public class ServletCreate extends HttpServlet {
@@ -26,8 +29,46 @@ public class ServletCreate extends HttpServlet {
 
         EntityManager entityManager = DBManager.getEntityManager();
         entityManager.getTransaction().begin();
-        entityManager.persist(companyFromRequest);
-        entityManager.persist(personFromRequest);
+
+
+        String companyName = companyFromRequest.getCompanyName();
+        String personName = personFromRequest.getPersonName();
+
+        Query queryCompName = entityManager.createQuery("from Company where companyName =: name").setParameter("name", companyName);
+        Query queryPersonName = entityManager.createQuery("from Person where personName =: name").setParameter("name", personName);
+        List<Company> companies = queryCompName.getResultList();
+        List<Person> personList = queryPersonName.getResultList();
+
+        //if company present in DB
+        if (!companies.isEmpty()) {
+            Company company = companies.get(0);
+            //if person present in DB
+            if (!personList.isEmpty()) {
+                Person personPersisted = personList.get(0);
+                List<Person> personListPesrsistedComp = company.getPersonList();
+                personListPesrsistedComp.add(personPersisted);
+                //if person does not present in DB
+            } else {
+                personList.add(personFromRequest);
+                company.setPersonList(personList);
+                entityManager.persist(companyFromRequest);
+            }
+            //if company does not present in DB
+        } else {
+            if (!personList.isEmpty()) {
+                entityManager.persist(companyFromRequest);
+                List<Person> people = new ArrayList<>();
+                Person personPersisted = personList.get(0);
+                people.add(personPersisted);
+                companyFromRequest.setPersonList(people);
+
+            } else {
+                personList.add(personFromRequest);
+                companyFromRequest.setPersonList(personList);
+                entityManager.persist(companyFromRequest);
+            }
+        }
+
         entityManager.getTransaction().commit();
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
@@ -39,10 +80,6 @@ public class ServletCreate extends HttpServlet {
         String companyName = request.getParameter("companyName");
         if (companyName != null) {
             company.setCompanyName(companyName);
-        }
-        Integer id = Integer.parseInt(request.getParameter("id"));
-        if(id!=null){
-            company.setCompanyId(id);
         }
         return company;
     }
