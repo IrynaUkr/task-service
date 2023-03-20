@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name = "ServletCreateCompany", value = "/ServletCreateCompany")
+@WebServlet(name = "ServletCreateCompany", value = "/savePersonCompany")
 public class ServletCreate extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -23,7 +23,7 @@ public class ServletCreate extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //validate req
+        //TODO validate req
         Company companyFromRequest = getCompanyFromRequest(request);
         Person personFromRequest = getPersonFromRequest(request);
 
@@ -34,10 +34,10 @@ public class ServletCreate extends HttpServlet {
         String companyName = companyFromRequest.getCompanyName();
         String personName = personFromRequest.getPersonName();
 
-        Query queryCompName = entityManager.createQuery("from Company where companyName =: name").setParameter("name", companyName);
-        Query queryPersonName = entityManager.createQuery("from Person where personName =: name").setParameter("name", personName);
-        List<Company> companies = queryCompName.getResultList();
-        List<Person> personList = queryPersonName.getResultList();
+        Query queryComp = entityManager.createQuery("from Company where companyName =: name").setParameter("name", companyName);
+        Query queryPerson = entityManager.createQuery("from Person where personName =: name").setParameter("name", personName);
+        List<Company> companies = queryComp.getResultList();
+        List<Person> personList = queryPerson.getResultList();
 
         //if company present in DB
         if (!companies.isEmpty()) {

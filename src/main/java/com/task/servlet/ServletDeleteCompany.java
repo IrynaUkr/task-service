@@ -17,7 +17,9 @@ public class ServletDeleteCompany extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { EntityManager entityManager = DBManager.getEntityManager();
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        EntityManager entityManager = DBManager.getEntityManager();
         entityManager.getTransaction().begin();
         Integer id = Integer.parseInt(request.getParameter("id"));
         Company company = entityManager.find(Company.class, id);
